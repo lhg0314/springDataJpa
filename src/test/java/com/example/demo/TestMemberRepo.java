@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +25,7 @@ import com.example.demo.repository.MemberRepository;
 public class TestMemberRepo {
 	
 	@Autowired MemberRepository mr;
+	@PersistenceContext EntityManager em;
 	
 	@Test
 	public void testMember() {
@@ -73,5 +77,28 @@ public class TestMemberRepo {
 		System.out.println(totalElements);
 		
 	}
-
+	
+	@Test
+	public void testBulk() {
+		
+		Member member = new Member("member1",10);
+		Member member2 = new Member("member2",15);
+		Member member3 = new Member("member3",20);
+		Member member4 = new Member("member4",30);
+		Member member5 = new Member("member5",40);
+		
+		mr.save(member);
+		mr.save(member2);
+		mr.save(member3);
+		mr.save(member4);
+		mr.save(member5);
+		
+		mr.bulkAgePlus(20);
+		
+//		em.flush(); //영속성 컨텍스트때문에 flush해줘야 변경된 데이터 받을수 있음
+//		em.clear();
+		List<Member> findMems = mr.findGraghBy();
+		
+		System.out.println(findMems.get(0).getTeam().getName());
+	}
 }

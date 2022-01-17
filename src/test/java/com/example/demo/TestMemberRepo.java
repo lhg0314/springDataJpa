@@ -26,8 +26,12 @@ public class TestMemberRepo {
 		Member savedMem = mr.save(member);
 		
 		Member findMem = mr.findById(savedMem.getId()).get();
+		Long count = mr.count();
 		
+		assertThat(count).isEqualTo(1);
 		assertThat(findMem.getId()).isEqualTo(savedMem.getId());
+		
+		mr.delete(findMem);
 	}
 
 }

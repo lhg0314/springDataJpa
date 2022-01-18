@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Member;
 import com.example.demo.entity.Team;
+import com.example.demo.repository.MemberProjection;
 import com.example.demo.repository.MemberRepository;
 
 @SpringBootTest
@@ -184,6 +185,32 @@ public class TestMemberRepo {
 	}
 	
 	@Test
+	public void testNativeQuery() throws Exception {
+		Team team = new Team("teamA");
+		em.persist(team);
+		Member member1 =new Member("member1",10,team);
+		Member member2 =new Member("member2",10,team);
+		
+		em.persist(member1);
+		em.persist(member2);
+		
+		em.flush();
+		em.clear();
+	
+		Page<MemberProjection> result = mr.findByNativeProjection(PageRequest.of(0, 10));
+		
+		List<MemberProjection> content = result.getContent();
+		for(MemberProjection p : content) {
+			System.out.println(p.getTeamName());
+			System.out.println(p.getUsername());
+		}
+
+		
+	}
+	
+	
+	
+	@Test
 	public void dutyChekTest() {
 		Member mem = mr.findById(1L).get(); //default :transaction(readOnly =true)
 		
@@ -194,4 +221,7 @@ public class TestMemberRepo {
 		mr.bulkAgePlus(50);
 		
 	}
+	
+	
+	
 }

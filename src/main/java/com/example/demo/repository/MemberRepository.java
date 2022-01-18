@@ -6,6 +6,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.QueryHint;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -72,4 +73,14 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 	
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<Member> findLockByUsername(String username);
+	
+	@Query(value = "select * from member",nativeQuery = true)
+	List<Member> findByNaticeQuery();
+	//로딩시점에 문법확인 불가
+	//동적쿼리 사용 불가능
+	
+	@Query(value = "select m.member_id as id, m.username, t.name as teamName from Member m left join team t",
+			nativeQuery = true,
+			countQuery = "select count(*) from member")
+	Page<MemberProjection> findByNativeProjection(Pageable pageable);
 }

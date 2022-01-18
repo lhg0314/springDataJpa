@@ -79,7 +79,7 @@ public class TestMemberRepo {
 	}
 	
 	@Test
-	public void testBulk() {
+	public void testBulk() throws InterruptedException {
 		
 		Member member = new Member("member1",10);
 		Member member2 = new Member("member2",15);
@@ -92,6 +92,7 @@ public class TestMemberRepo {
 		mr.save(member3);
 		mr.save(member4);
 		mr.save(member5);
+		
 		
 		mr.bulkAgePlus(20);
 		
@@ -132,6 +133,24 @@ public class TestMemberRepo {
 		em.clear(); //1차캐시 날리기 
 		
 		List<Member> findMember = mr.findMemberCustom();
+		
+	}
+	
+	@Test
+	public void testAudit() throws Exception {
+		Member member1 = mr.save(new Member("member1",10));
+		
+		//Thread.sleep(100);
+		member1.setUsername("member2");
+		
+		em.flush();
+		em.clear();
+		
+		Member findMember = mr.findById(member1.getId()).get();
+		
+		System.out.println("=================================================");
+		System.out.println(findMember.getCreatedDate());
+		System.out.println(findMember.getLastModifiedDate());
 		
 	}
 }

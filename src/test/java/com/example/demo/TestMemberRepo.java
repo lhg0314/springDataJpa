@@ -10,6 +10,8 @@ import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,6 +19,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Member;
+import com.example.demo.entity.Team;
 import com.example.demo.repository.MemberRepository;
 
 @SpringBootTest
@@ -149,6 +152,33 @@ public class TestMemberRepo {
 		Member findMember = mr.findById(member1.getId()).get();
 		
 		System.out.println("=================================================");
+
+		
+	}
+	
+	@Test
+	public void testExample() throws Exception {
+		Team team = new Team("teamA");
+		em.persist(team);
+		Member member1 =new Member("member1",10,team);
+		Member member2 =new Member("member2",10,team);
+		
+		em.persist(member1);
+		em.persist(member2);
+		
+		em.flush();
+		em.clear();
+	
+		Member member = new Member("member1",10);
+		Team teamv = new Team("team");
+		member.setTeam(teamv);//연관관계 inner 조인해여 조회
+		
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("age");
+		//무시, 동적쿼리 적용 가능
+		
+		Example<Member> example = Example.of(member,matcher); //도메인 객체 그대로 사용
+		
+		List<Member> members = mr.findAll(example);
 
 		
 	}

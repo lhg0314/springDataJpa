@@ -7,11 +7,13 @@ public class MemberDto {
 	
 	private Long id;
 	private String username;
+	private int age;
 	private String TeamName;
 	
-	public MemberDto(Long id, String username, String teamName) {
+	public MemberDto(Long id, String username,int age, String teamName) {
 		this.id = id;
 		this.username = username;
+		this.age = age;
 		TeamName = teamName;
 	}
 	

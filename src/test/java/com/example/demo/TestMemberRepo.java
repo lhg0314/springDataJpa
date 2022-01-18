@@ -149,8 +149,19 @@ public class TestMemberRepo {
 		Member findMember = mr.findById(member1.getId()).get();
 		
 		System.out.println("=================================================");
-		System.out.println(findMember.getCreatedDate());
-		System.out.println(findMember.getLastModifiedDate());
+
+		
+	}
+	
+	@Test
+	public void dutyChekTest() {
+		Member mem = mr.findById(1L).get(); //default :transaction(readOnly =true)
+		
+		mem.setUsername("newname");
+		Member newMember = new Member("newName",20);
+		mr.save(newMember);// persist or merge
+		
+		mr.bulkAgePlus(50);
 		
 	}
 }

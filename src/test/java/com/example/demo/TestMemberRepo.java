@@ -101,4 +101,37 @@ public class TestMemberRepo {
 		
 		System.out.println(findMems.get(0).getTeam().getName());
 	}
+	
+	
+	@Test
+	public void testQueryHint() {
+		Member member1 = mr.save(new Member("member1",10));
+		em.flush();
+		em.clear(); //1차캐시 날리기 
+		
+		Member findMember = mr.findReadOnlyByUsername("member1");
+		
+		findMember.setUsername("member2"); //readOnly true , 변경 무시
+		em.flush();
+	}
+	
+	@Test
+	public void testLock() {
+		Member member1 = mr.save(new Member("member1",10));
+		em.flush();
+		em.clear(); //1차캐시 날리기 
+		
+		List<Member> findMember = mr.findLockByUsername("member1");
+		
+	}
+	
+	@Test
+	public void testCustom() {
+		Member member1 = mr.save(new Member("member1",10));
+		em.flush();
+		em.clear(); //1차캐시 날리기 
+		
+		List<Member> findMember = mr.findMemberCustom();
+		
+	}
 }
